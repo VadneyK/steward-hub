@@ -1,0 +1,25 @@
+{
+  "_note": "Hook registrations for the steward hooks. tools/sync.py merges any missing entry into ~/.claude/settings.json (backup first) and never removes one.",
+  "hooks": {
+    "PreToolUse": [
+      {"matcher": "Bash", "hooks": [
+        {"type": "command", "command": "python3 ~/.claude/hooks/steward/ship-guard.py"}
+      ]},
+      {"matcher": "Bash|mcp__.*", "hooks": [
+        {"type": "command", "command": "python3 ~/.claude/hooks/steward/outbound-gate.py"}
+      ]},
+      {"matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit|mcp__Claude_Browser__.*|mcp__claude-in-chrome__.*", "hooks": [
+        {"type": "command", "command": "python3 ~/.claude/hooks/steward/no-browser-guard.py", "timeout": 10}
+      ]}
+    ],
+    "PostToolUse": [
+      {"matcher": "mcp__.*", "hooks": [
+        {"type": "command", "command": "python3 ~/.claude/hooks/steward/outbound-gate.py --post", "async": true}
+      ]}
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "python3 ~/.claude/hooks/steward/outbound-gate.py --stop"}]},
+      {"hooks": [{"type": "command", "command": "python3 ~/.claude/hooks/steward/lane-loop-guard.py", "timeout": 20}]}
+    ]
+  }
+}

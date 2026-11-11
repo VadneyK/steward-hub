@@ -1,0 +1,4 @@
+# file:regex pairs the private denylist may match on purpose (the author line, the repo URL)
+LICENSE:Kentaro Vadney
+README.md:VadneyK/steward-hub
+README.md:Kentaro Vadney

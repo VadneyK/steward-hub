@@ -1,0 +1,19 @@
+name: check
+on:
+  pull_request:
+  push:
+    branches: [main]
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: git config --global user.name ci && git config --global user.email ci@example.com
+      - run: python3 -m unittest discover -s tests
+      - run: python3 scripts/leak_scan.py
